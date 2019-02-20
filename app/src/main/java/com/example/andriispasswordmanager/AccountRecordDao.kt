@@ -9,7 +9,7 @@ import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Query
 
 @Dao
-public interface AccountRecordDao {
+interface AccountRecordDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(accountRecord: AccountRecord)
 

@@ -1,16 +1,12 @@
 package com.example.andriispasswordmanager
 
 import android.app.Activity
-import android.app.Instrumentation
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.content.Intent
-import android.support.design.widget.Snackbar
 import android.text.TextUtils
-import android.util.Log
-import android.view.View
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -34,7 +30,7 @@ class AddPasswordActivity: AppCompatActivity(), CoroutineScope {
         editTextPassword = findViewById(R.id.editTextPassword)
 
         findViewById<Button>(R.id.button_save).setOnClickListener {
-            saveData()
+            generateData()
         }
     }
 
@@ -43,7 +39,7 @@ class AddPasswordActivity: AppCompatActivity(), CoroutineScope {
         childCoroutinesJob.cancel()
     }
 
-    private fun saveData() = runBlocking {
+    private fun generateData() = runBlocking {
         if (!TextUtils.isEmpty(editTextDestination.text.toString()) &&
             !TextUtils.isEmpty(editTextUsername.text.toString()) &&
             !TextUtils.isEmpty(editTextPassword.text.toString()))
