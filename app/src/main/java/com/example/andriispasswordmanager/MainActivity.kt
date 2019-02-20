@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
 
         accountsViewModel.allAccounts.observe(this@MainActivity, Observer { accounts ->
                 accounts?.let {
-                    viewAdapter.setDataset(it.map { listItem -> listItem.username })
+                    viewAdapter.setDataset(it)
                 }
             })
     }

@@ -11,7 +11,7 @@ class Adapter(context: Context) :
     RecyclerView.Adapter<Adapter.MyViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private var dataset = emptyList<String>()
+    private var dataset = emptyList<AccountRecord>()
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -30,7 +30,7 @@ class Adapter(context: Context) :
         return MyViewHolder(itemRowView)
     }
 
-    internal fun setDataset(accounts: List<String>) {
+    internal fun setDataset(accounts: List<AccountRecord>) {
         this.dataset = accounts
         notifyDataSetChanged()
     }
@@ -39,7 +39,7 @@ class Adapter(context: Context) :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.itemRowView.service_name.text = dataset[position]
+        holder.itemRowView.service_name.text = dataset[position].username
     }
 
     // Return the size of your dataset (invoked by the layout manager)
