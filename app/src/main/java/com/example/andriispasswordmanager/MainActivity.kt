@@ -43,6 +43,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         viewManager = LinearLayoutManager(this@MainActivity)
         viewAdapter = Adapter(this@MainActivity)
         recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view).apply {
+            // Add spacing at the bottom of list items.
+            //addItemDecoration(SpacingDecorator(Utils.dpToPx(applicationContext, R.dimen.accounts_list_items_spacing)))
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
             //setHasFixedSize(true)
@@ -50,8 +52,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
             layoutManager = viewManager
             // specify an viewAdapter (see also next example)
             adapter = viewAdapter
-            // Add spacing at the bottom of list items.
-            //addItemDecoration(SpacingDecorator(Utils.dpToPx(applicationContext, R.dimen.accounts_list_items_spacing)))
         }
 
         accountsViewModel.allAccounts.observe(this@MainActivity, Observer { accounts ->

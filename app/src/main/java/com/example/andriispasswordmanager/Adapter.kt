@@ -1,6 +1,7 @@
 package com.example.andriispasswordmanager
 
 import android.content.Context
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -18,14 +19,14 @@ class Adapter(context: Context) :
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
-    class MyViewHolder(val itemRowView: LinearLayout) : RecyclerView.ViewHolder(itemRowView)
+    class MyViewHolder(val itemRowView: CardView) : RecyclerView.ViewHolder(itemRowView)
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): Adapter.MyViewHolder {
         // create a new view
         val itemRowView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_row, parent, false) as LinearLayout
+            .inflate(R.layout.item_row, parent, false) as CardView
         // set the view's size, margins, paddings and layout parameters
 
         return MyViewHolder(itemRowView)
