@@ -7,7 +7,6 @@ import android.arch.persistence.room.Update
 import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Query
 
-
 @Dao
 public interface AccountRecordDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -19,7 +18,7 @@ public interface AccountRecordDao {
     @Delete
     fun deleteAccount(accountRecord: AccountRecord)
 
-    @Query("SELECT * FROM AccountRecord WHERE name == :name")
+    @Query("SELECT * FROM AccountRecord WHERE username == :name")
     fun getAccountByName(name: String): List<AccountRecord>
 
     @Query("SELECT * FROM AccountRecord")
