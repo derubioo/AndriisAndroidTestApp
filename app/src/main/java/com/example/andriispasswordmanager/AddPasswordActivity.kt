@@ -1,11 +1,14 @@
 package com.example.andriispasswordmanager
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.content.Intent
 import android.support.design.widget.Snackbar
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import kotlinx.coroutines.*
@@ -16,8 +19,6 @@ class AddPasswordActivity: AppCompatActivity(), CoroutineScope {
     lateinit var childCoroutinesJob: Job
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + childCoroutinesJob
-
-    private val tag = "AddPasswordActivity"
 
     private lateinit var editTextDestination: EditText
     private lateinit var editTextUsername: EditText
@@ -32,8 +33,8 @@ class AddPasswordActivity: AppCompatActivity(), CoroutineScope {
         editTextUsername = findViewById(R.id.editTextUsername)
         editTextPassword = findViewById(R.id.editTextPassword)
 
-        findViewById<Button>(R.id.button_save).setOnClickListener { view ->
-            saveData(view)
+        findViewById<Button>(R.id.button_save).setOnClickListener {
+            saveData()
         }
     }
 
@@ -42,36 +43,31 @@ class AddPasswordActivity: AppCompatActivity(), CoroutineScope {
         childCoroutinesJob.cancel()
     }
 
-    private fun saveData(view: View) = runBlocking {
-        val destination = editTextDestination.text?.toString() ?: let {
-            editTextDestination.error = getString(R.string.required_warning)
-            editTextDestination.requestFocus()
-            return@runBlocking
+    private fun saveData() = runBlocking {
+        if (!TextUtils.isEmpty(editTextDestination.text.toString()) &&
+            !TextUtils.isEmpty(editTextUsername.text.toString()) &&
+            !TextUtils.isEmpty(editTextPassword.text.toString()))
+        {
+            val destination = editTextDestination.text.toString()
+            val username = editTextUsername.text.toString()
+            val password = editTextPassword.text.toString()
+            val accountRecord = AccountRecord(
+                destination = destination,
+                username = username,
+                password = password)
+
+            val replyIntent = Intent()
+            replyIntent.putExtra(ACCOUNT_RECORD, accountRecord)
+            setResult(Activity.RESULT_OK, replyIntent)
         }
-        val username = editTextUsername.text?.toString() ?: let {
-            editTextUsername.error = getString(R.string.required_warning)
-            editTextUsername.requestFocus()
-            return@runBlocking
-        }
-        val password = editTextPassword.text?.toString() ?: let {
-            editTextPassword.error = getString(R.string.required_warning)
-            editTextPassword.requestFocus()
-            return@runBlocking
+        else {
+            setResult(Activity.RESULT_CANCELED)
         }
 
-        val accountRecord = AccountRecord(
-            destination = destination,
-            username = username,
-            password = password)
-
-        launch {
-            AppDatabase.INSTANCE?.accountRecordDao()?.insertAccount(accountRecord)
-            Log.i(tag, "Saved data")
-        }
-
-        // TODO: Bug. Snackbar is not showing up.
-        Snackbar.make(view, getString(R.string.snackbar_text_saved), Snackbar.LENGTH_LONG).show()
         finish()
-        startActivity(Intent(applicationContext, MainActivity::class.java))
+    }
+
+    companion object {
+        const val ACCOUNT_RECORD = "AccountRecord"
     }
 }

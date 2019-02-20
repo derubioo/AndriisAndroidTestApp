@@ -12,19 +12,18 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         private const val DatabaseName = "PasswordsDatabase"
-        var INSTANCE: AppDatabase? = null
+        private var instance: AppDatabase? = null
 
-        fun getDataBase(context: Context): AppDatabase? {
-            if (INSTANCE == null){
-                synchronized(AppDatabase::class){
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, DatabaseName).build()
-                }
+        fun getAppDatabase(context: Context): AppDatabase {
+            return instance ?: synchronized(this) {
+                val instance = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, DatabaseName).build()
+                this.instance = instance
+                instance
             }
-            return INSTANCE
         }
 
         fun destroyDataBase(){
-            INSTANCE = null
+            instance = null
         }
     }
 }
