@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var accountsViewModel: AccountsViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: Adapter
-    private lateinit var viewManager: RecyclerView.LayoutManager
+    private lateinit var viewManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
         super.onCreate(savedInstanceState)
@@ -45,11 +45,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view).apply {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
-            setHasFixedSize(true)
+            //setHasFixedSize(true)
             // use a linear layout manager
             layoutManager = viewManager
             // specify an viewAdapter (see also next example)
             adapter = viewAdapter
+            // Add spacing at the bottom of list items.
+            //addItemDecoration(SpacingDecorator(Utils.dpToPx(applicationContext, R.dimen.accounts_list_items_spacing)))
         }
 
         accountsViewModel.allAccounts.observe(this@MainActivity, Observer { accounts ->

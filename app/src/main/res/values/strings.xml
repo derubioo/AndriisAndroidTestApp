@@ -9,4 +9,5 @@
     <string name="save_button_text">Save</string>
     <string name="required_warning">Required field</string>
     <string name="snackbar_text_saved">Saved</string>
+    <string name="view_password_button">View Password Button</string>
 </resources>
