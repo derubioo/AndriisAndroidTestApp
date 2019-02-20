@@ -4,15 +4,19 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import android.content.Intent
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 
-class AddPasswordActivity: AppCompatActivity() {
+class AddPasswordActivity: AppCompatActivity(), CoroutineScope {
+    lateinit var childCoroutinesJob: Job
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + childCoroutinesJob
+
     private val tag = "AddPasswordActivity"
 
     private lateinit var editTextDestination: EditText
@@ -22,6 +26,7 @@ class AddPasswordActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.add_password_activity)
+        childCoroutinesJob = Job()
 
         editTextDestination = findViewById(R.id.editTextDestination)
         editTextUsername = findViewById(R.id.editTextUsername)
@@ -30,6 +35,11 @@ class AddPasswordActivity: AppCompatActivity() {
         findViewById<Button>(R.id.button_save).setOnClickListener { view ->
             saveData(view)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        childCoroutinesJob.cancel()
     }
 
     private fun saveData(view: View) = runBlocking {

@@ -2,21 +2,28 @@ package com.example.andriispasswordmanager
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
-
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CoroutineScope {
+    lateinit var childCoroutinesJob: Job
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + childCoroutinesJob
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) = runBlocking {
         super.onCreate(savedInstanceState)
+        childCoroutinesJob = Job()
+
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -24,8 +31,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(applicationContext, AddPasswordActivity::class.java))
         }
 
-        viewManager = LinearLayoutManager(this)
-        viewAdapter = Adapter(arrayOf("Instagram", "GitHub", "Online Banking"))
+        viewManager = LinearLayoutManager(this@MainActivity)
+
+        val accountsList = withContext(coroutineContext) {
+            AppDatabase.INSTANCE?.accountRecordDao()?.getAccounts()
+        }
+
+        viewAdapter = Adapter(accountsList?.map { listItem -> listItem.username } ?: arrayListOf(""))
 
         recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view).apply {
             // use this setting to improve performance if you know that changes
@@ -54,5 +66,10 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        childCoroutinesJob.cancel()
     }
 }
